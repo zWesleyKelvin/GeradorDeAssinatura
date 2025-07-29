@@ -20,7 +20,7 @@ $redes = [];
 
 if ($whatsapp) {
   $whatsapp_link = "$whatsapp" . preg_replace('/\D/', '', $whatsapp);
-  $redes[] = "<a href='$whatsapp_link' target='_blank' style='text-decoration: none;'><img src='https://cdn-icons-png.flaticon.com/16/733/733585.png' style='vertical-align:middle; margin-right: 5px;'/>WhatsApp</a>";
+  $redes[] = "<a href='$whatsapp' target='_blank' style='text-decoration: none;'><img src='https://cdn-icons-png.flaticon.com/16/733/733585.png' style='vertical-align:middle; margin-right: 5px;'/>WhatsApp</a>";
 }
 if ($instagram) {
   $redes[] = "<a href='$instagram' target='_blank' style='text-decoration: none;'><img src='https://cdn-icons-png.flaticon.com/16/2111/2111463.png' style='vertical-align:middle; margin-right: 5px;'/>Instagram</a>";
