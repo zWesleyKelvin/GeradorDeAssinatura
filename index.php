@@ -1,5 +1,5 @@
 <?php
-// index.php - Formulário com Bootstrap
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -26,34 +26,47 @@
 <body class="bg-light">
 <div class="container py-4">
   <h2 class="mb-3">Gerador de Assinatura Profissional</h2>
-  <form action="gerar.php" method="post">
-    <div class="mb-2">
-      <label for="nome" class="form-label">Nome completo</label>
-      <input type="text" class="form-control" id="nome" name="nome" required>
+  <form action="gerar.php" method="post" enctype="multipart/form-data" class="p-4 bg-white shadow rounded">
+    
+    <div class="mb-3">
+      <label class="form-label">Nome:</label>
+      <input type="text" name="nome" class="form-control" required>
     </div>
-    <div class="mb-2">
-      <label for="email" class="form-label">E-mail</label>
-      <input type="email" class="form-control" id="email" name="email" required>
+
+    <div class="mb-3">
+      <label class="form-label">Email:</label>
+      <input type="email" name="email" class="form-control" required>
     </div>
-    <div class="mb-2">
-      <label for="telefone" class="form-label">Telefone celular</label>
-      <input type="text" class="form-control" id="telefone" name="telefone" placeholder="(21) 99999-9999" required>
+
+    <div class="mb-3">
+      <label class="form-label">Telefone:</label>
+      <input type="text" id="telefone" name="telefone" class="form-control">
     </div>
-    <div class="mb-2">
-      <label for="whatsapp" class="form-label">Whatsapp (opcional)</label>
-      <input type="url" class="form-control" id="whatsapp" name="whatsapp">
+
+    <div class="mb-3">
+      <label class="form-label">WhatsApp (link):</label>
+      <input type="text" name="whatsapp" class="form-control" placeholder="https://wa.me/55xxxxxxxxxxx">
     </div>
-    <div class="mb-2">
-      <label for="instagram" class="form-label">Instagram (opcional)</label>
-      <input type="url" class="form-control" id="instagram" name="instagram">
+
+    <div class="mb-3">
+      <label class="form-label">Instagram (link):</label>
+      <input type="text" name="instagram" class="form-control" placeholder="https://instagram.com/seuperfil">
     </div>
-    <div class="mb-2">
-      <label for="linkedin" class="form-label">LinkedIn (opcional)</label>
-      <input type="url" class="form-control" id="linkedin" name="linkedin">
+
+    <div class="mb-3">
+      <label class="form-label">LinkedIn (link):</label>
+      <input type="text" name="linkedin" class="form-control" placeholder="https://linkedin.com/in/seuperfil">
     </div>
+
+    <div class="mb-3">
+      <label class="form-label">Escolha uma imagem:</label>
+      <input type="file" name="foto" class="form-control" accept="image/*">
+    </div>
+
     <button type="submit" class="btn btn-primary">Gerar Assinatura</button>
   </form>
 </div>
+
 <script>
   document.getElementById('telefone').addEventListener('input', function(e) {
     let v = e.target.value.replace(/\D/g, "");

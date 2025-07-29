@@ -1,7 +1,7 @@
 <?php
-// gerar.php - Exibe a assinatura gerada com imagem WA convertida em base64 inline
 
-function limpar($str) {
+function limpar($str)
+{
   return htmlspecialchars(trim($str));
 }
 
@@ -29,20 +29,22 @@ if ($linkedin) {
   $redes[] = "<a href='$linkedin' target='_blank' style='text-decoration: none;'><img src='https://cdn-icons-png.flaticon.com/16/145/145807.png' style='vertical-align:middle; margin-right: 5px;'/>LinkedIn</a>";
 }
 
-// Imagem WA embutida diretamente via base64
-$logoPath = 'WA.png';
-$waLogo = '';
+$waLogo = "<div style='width:60px;height:60px;background:#0c2749;color:#fff;display:flex;align-items:center;justify-content:center;border-radius:8px;'>WA</div>";
 
-if (file_exists($logoPath)) {
-  $base64 = base64_encode(file_get_contents($logoPath));
-  $waLogo = "<img src='data:image/png;base64,{$base64}' alt='WA Logo' width='60' height='60' style='border-radius:8px;' />";
-} else {
-  $waLogo = "<div style='width:60px;height:60px;background:#0c2749;color:#fff;display:flex;align-items:center;justify-content:center;border-radius:8px;'>WA</div>";
+if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+  $tmp_name = $_FILES['foto']['tmp_name'];
+  $mime = mime_content_type($tmp_name);
+
+  if (in_array($mime, ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'])) {
+    $base64 = base64_encode(file_get_contents($tmp_name));
+    $waLogo = "<img src='data:$mime;base64,{$base64}' alt='Foto' width='60' height='60' style='border-radius:8px;' />";
+  }
 }
 
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
   <title>Assinatura Gerada</title>
@@ -57,14 +59,17 @@ if (file_exists($logoPath)) {
       color: #000000;
       margin-top: 20px;
     }
+
     .btn-group {
       margin-top: 20px;
     }
+
     .assinatura-box table td {
       vertical-align: top;
     }
   </style>
 </head>
+
 <body class="container py-4">
   <h3>Assinatura Gerada:</h3>
   <div id="assinatura" class="assinatura-box p-3">
@@ -76,8 +81,10 @@ if (file_exists($logoPath)) {
         <td>
           <strong><?php echo $nome; ?></strong><br>
           <a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a><br>
-          <?php if ($telefone) echo "<img src='https://cdn-icons-png.flaticon.com/16/724/724664.png' style='vertical-align:middle; margin-right: 5px;'/>$telefone<br>"; ?>
-          <?php if (!empty($redes)) echo "<div style='margin-top:8px; display: flex; gap: 10px;'>" . implode("", $redes) . "</div>"; ?>
+          <?php if ($telefone)
+            echo "<img src='https://cdn-icons-png.flaticon.com/16/724/724664.png' style='vertical-align:middle; margin-right: 5px;'/>$telefone<br>"; ?>
+          <?php if (!empty($redes))
+            echo "<div style='margin-top:8px; display: flex; gap: 10px;'>" . implode("", $redes) . "</div>"; ?>
         </td>
       </tr>
     </table>
@@ -111,4 +118,5 @@ if (file_exists($logoPath)) {
     }
   </script>
 </body>
+
 </html>
