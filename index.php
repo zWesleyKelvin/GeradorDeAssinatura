@@ -25,7 +25,7 @@
 </head>
 <body class="bg-light">
 <div class="container py-4">
-  <h2 class="mb-3">Gerador de Assinatura Profissional</h2>
+  <h2 class="mb-3">Gerador de Assinatura Pessoal</h2>
   <form action="gerar.php" method="post" enctype="multipart/form-data" class="p-4 bg-white shadow rounded">
     
     <div class="mb-3">
