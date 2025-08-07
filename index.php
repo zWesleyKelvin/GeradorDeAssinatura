@@ -1,5 +1,4 @@
 <?php
-
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -8,29 +7,62 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gerador de Assinatura</title>
+
+  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
   <style>
-    input.form-control {
-      padding: 6px 10px;
-      font-size: 14px;
+    body {
+      background-color: #f4f6fa;
+      font-family: 'Inter', sans-serif;
+      color: #333;
+    }
+
+    h2 {
+      color: #0c2749;
+      font-weight: 600;
+    }
+
+    .form-container {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 0 18px rgba(0, 0, 0, 0.05);
+      padding: 30px;
     }
 
     label.form-label {
-      margin-bottom: 4px;
-      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 6px;
     }
 
-    button.btn {
-      padding: 6px 16px;
-      font-size: 14px;
+    input.form-control {
+      padding: 10px 14px;
+      font-size: 15px;
+      border-radius: 8px;
+    }
+
+    .btn-primary {
+      background-color: #0c2749;
+      border-color: #0c2749;
+      font-weight: 500;
+      padding: 10px 18px;
+      border-radius: 8px;
+    }
+
+    .btn-primary:hover {
+      background-color: #0a1f3b;
     }
   </style>
 </head>
 
-<body class="bg-light">
-  <div class="container py-4">
-    <h2 class="mb-3">Gerador de Assinatura Pessoal</h2>
-    <form action="gerar.php" method="post" enctype="multipart/form-data" class="p-4 bg-white shadow rounded">
+<body>
+  <div class="container py-5">
+    <h2 class="mb-4 text-center">Gerador de Assinatura</h2>
+
+    <form action="gerar.php" method="post" enctype="multipart/form-data" class="form-container mx-auto" style="max-width: 600px;">
 
       <div class="mb-3">
         <label class="form-label">Nome:</label>
@@ -44,12 +76,12 @@
 
       <div class="mb-3">
         <label class="form-label">Telefone:</label>
-        <input type="text" id="telefone" name="telefone" class="form-control">
+        <input type="text" id="telefone" name="telefone" class="form-control" placeholder="(21) 91234-5678">
       </div>
 
       <div class="mb-3">
         <label class="form-label">WhatsApp (apenas número com DDD):</label>
-        <input type="text" name="whatsapp" class="form-control" placeholder="Ex: 21912345678">
+        <input type="text" name="whatsapp" class="form-control" placeholder="21912345678">
       </div>
 
       <div class="mb-3">
@@ -62,12 +94,14 @@
         <input type="text" name="linkedin" class="form-control" placeholder="https://linkedin.com/in/seuperfil">
       </div>
 
-      <div class="mb-3">
+      <div class="mb-4">
         <label class="form-label">Escolha uma imagem:</label>
         <input type="file" name="foto" class="form-control" accept="image/*">
       </div>
 
-      <button type="submit" class="btn btn-primary">Gerar Assinatura</button>
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary">Gerar Assinatura</button>
+      </div>
     </form>
   </div>
 
