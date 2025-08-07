@@ -9,6 +9,10 @@ $nome = limpar($_POST['nome'] ?? '');
 $email = limpar($_POST['email'] ?? '');
 $telefone = limpar($_POST['telefone'] ?? '');
 $whatsapp = limpar($_POST['whatsapp'] ?? '');
+$numero_wa = preg_replace('/\D/', '', $whatsapp);
+if ($numero_wa) {
+  $whatsapp = "https://wa.me/55$numero_wa";
+}
 $instagram = limpar($_POST['instagram'] ?? '');
 $linkedin = limpar($_POST['linkedin'] ?? '');
 
