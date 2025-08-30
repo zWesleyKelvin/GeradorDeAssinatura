@@ -1,63 +1,87 @@
 <?php
-function limpar($str)
-{
-  return htmlspecialchars(trim($str));
+// gerar.php
+
+// -------------------- Funções utilitárias --------------------
+function limpar($str) {
+  return htmlspecialchars(trim((string)$str), ENT_QUOTES, 'UTF-8');
 }
 
-$nome = limpar($_POST['nome'] ?? '');
-$email = limpar($_POST['email'] ?? '');
-$telefone = limpar($_POST['telefone'] ?? '');
-$whatsapp = limpar($_POST['whatsapp'] ?? '');
+function normaliza_url($url) {
+  $url = trim((string)$url);
+  if ($url === '') return '';
+  // Adiciona https:// se faltar esquema
+  if (!preg_match('~^https?://~i', $url)) {
+    $url = 'https://' . $url;
+  }
+  return htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
+}
+
+// -------------------- Leitura dos campos --------------------
+$nome      = limpar($_POST['nome'] ?? '');
+$email     = limpar($_POST['email'] ?? '');
+$cargo     = limpar($_POST['cargo'] ?? '');
+$telefone  = limpar($_POST['telefone'] ?? '');
+$whatsapp  = limpar($_POST['whatsapp'] ?? '');
+$instagram = normaliza_url($_POST['instagram'] ?? '');
+$linkedin  = normaliza_url($_POST['linkedin'] ?? '');
+
+// Regras mínimas
+if (!$nome || !$email) {
+  die("<p style='color:red;font-family:sans-serif;'>Erro: Nome e E-mail são obrigatórios.</p>");
+}
+
+// Monta link de WhatsApp se veio número
 $numero_wa = preg_replace('/\D/', '', $whatsapp);
 if ($numero_wa) {
-  $whatsapp = "https://wa.me/55$numero_wa";
-}
-$instagram = limpar($_POST['instagram'] ?? '');
-$linkedin = limpar($_POST['linkedin'] ?? '');
-
-if (!$nome || !$email) {
-  die("<p style='color:red;'>Erro: Nome e E-mail são obrigatórios.</p>");
+  // Força DDI 55 (Brasil)
+  $whatsapp = "https://wa.me/55{$numero_wa}";
+} else {
+  $whatsapp = '';
 }
 
+// -------------------- Redes/links --------------------
 $redes = [];
 
 if ($whatsapp) {
-  $redes[] = "<a href='$whatsapp' target='_blank'><img src='https://cdn-icons-png.flaticon.com/16/733/733585.png'/> WhatsApp</a>";
+  $redes[] = "<a href='{$whatsapp}' target='_blank' rel='noopener noreferrer'><img src='https://cdn-icons-png.flaticon.com/16/733/733585.png' alt='WhatsApp'/> WhatsApp</a>";
 }
 if ($instagram) {
-  $redes[] = "<a href='$instagram' target='_blank'><img src='https://cdn-icons-png.flaticon.com/16/2111/2111463.png'/> Instagram</a>";
+  $redes[] = "<a href='{$instagram}' target='_blank' rel='noopener noreferrer'><img src='https://cdn-icons-png.flaticon.com/16/2111/2111463.png' alt='Instagram'/> Instagram</a>";
 }
 if ($linkedin) {
-  $redes[] = "<a href='$linkedin' target='_blank'><img src='https://cdn-icons-png.flaticon.com/16/145/145807.png'/> LinkedIn</a>";
+  $redes[] = "<a href='{$linkedin}' target='_blank' rel='noopener noreferrer'><img src='https://cdn-icons-png.flaticon.com/16/145/145807.png' alt='LinkedIn'/> LinkedIn</a>";
 }
 
-$waLogo = "<div style='width:60px;height:60px;background:#0c2749;color:#fff;display:flex;align-items:center;justify-content:center;border-radius:8px;'>WA</div>";
+// -------------------- Foto/Logo --------------------
+$fotoHtml = "<div style='width:60px;height:60px;background:#0c2749;color:#fff;display:flex;align-items:center;justify-content:center;border-radius:8px;font-family:Inter,Arial,sans-serif;font-weight:600;'>WA</div>";
 
 if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
   $tmp_name = $_FILES['foto']['tmp_name'];
-  $mime = mime_content_type($tmp_name);
-
-  if (in_array($mime, ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'])) {
-    $base64 = base64_encode(file_get_contents($tmp_name));
-    $waLogo = "<img src='data:$mime;base64,{$base64}' alt='Foto' width='60' height='60' style='border-radius:8px;' />";
+  // Valida tamanho opcional (ex.: 2MB)
+  if (filesize($tmp_name) <= 2 * 1024 * 1024) {
+    $mime = @mime_content_type($tmp_name);
+    if (in_array($mime, ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'])) {
+      $base64 = base64_encode(file_get_contents($tmp_name));
+      $fotoHtml = "<img src='data:{$mime};base64,{$base64}' alt='Foto' width='60' height='60' style='border-radius:8px;object-fit:cover;' />";
+    }
   }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Assinatura Gerada</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap & Font -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+
   <style>
     body {
       background-color: #f8f9fa;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     }
-
     .assinatura-box {
       background: #fff;
       border: 1px solid #dee2e6;
@@ -65,14 +89,19 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
       padding: 20px;
       box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
       margin-top: 30px;
-      max-width: 600px;
+      max-width: 640px;
     }
-
     .assinatura-box strong {
       color: #0c2749;
       font-size: 16px;
+      line-height: 1.2;
     }
-
+    .cargo {
+      font-size: 14px;
+      color: #666;
+      margin: 2px 0 6px;
+      line-height: 1.2;
+    }
     .assinatura-box a {
       color: #0c2749;
       font-weight: 500;
@@ -80,26 +109,25 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
       font-size: 14px;
       margin-right: 12px;
     }
-
     .assinatura-box a:hover {
       text-decoration: underline;
     }
-
     .assinatura-box img {
       border-radius: 8px;
       vertical-align: middle;
       margin-right: 5px;
     }
-
     .icones-redes {
       margin-top: 10px;
       display: flex;
       gap: 15px;
       flex-wrap: wrap;
+      align-items: center;
     }
-
-    button.btn,
-    a.btn {
+    .table-assinatura td {
+      vertical-align: top;
+    }
+    button.btn, a.btn {
       border-radius: 8px;
       font-weight: 500;
       padding: 8px 16px;
@@ -108,21 +136,29 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
     }
   </style>
 </head>
-
 <body class="container py-4">
   <h3 class="text-center">Assinatura Gerada:</h3>
+
   <div id="assinatura" class="assinatura-box mx-auto">
-    <table>
+    <table class="table-assinatura" role="presentation" cellspacing="0" cellpadding="0">
       <tr>
-        <td style="padding-right: 15px;">
-          <?php echo $waLogo; ?>
+        <td style="padding-right:15px; width: 72px;">
+          <?php echo $fotoHtml; ?>
         </td>
         <td>
           <strong><?php echo $nome; ?></strong><br>
-          <a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a><br>
-          <?php if ($telefone): ?>
-            <img src='https://cdn-icons-png.flaticon.com/16/724/724664.png' /> <?php echo $telefone; ?><br>
+
+          <?php if ($cargo): ?>
+            <div class="cargo"><?php echo $cargo; ?></div>
           <?php endif; ?>
+
+          <a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a><br>
+
+          <?php if ($telefone): ?>
+            <img src="https://cdn-icons-png.flaticon.com/16/724/724664.png" alt="Telefone" />
+            <?php echo $telefone; ?><br>
+          <?php endif; ?>
+
           <?php if (!empty($redes)): ?>
             <div class="icones-redes"><?php echo implode("", $redes); ?></div>
           <?php endif; ?>
@@ -132,32 +168,38 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
   </div>
 
   <div class="d-flex justify-content-center gap-2 flex-wrap mt-4">
-    <!-- <button class="btn btn-success" onclick="copiarAssinatura()">📋 Copiar Assinatura</button> -->
     <button class="btn btn-outline-primary" onclick="exportarHTML()">💾 Exportar HTML</button>
+    <button class="btn btn-success" onclick="copiarAssinatura()">📋 Copiar Assinatura</button>
     <a href="index.php" class="btn btn-secondary">← Voltar</a>
   </div>
 
   <script>
     function copiarAssinatura() {
-      const area = document.createElement('textarea');
-      area.value = document.getElementById('assinatura').innerHTML;
-      document.body.appendChild(area);
-      area.select();
+      const wrapper = document.createElement('textarea');
+      wrapper.value = document.getElementById('assinatura').innerHTML;
+      document.body.appendChild(wrapper);
+      wrapper.select();
       document.execCommand('copy');
-      document.body.removeChild(area);
+      document.body.removeChild(wrapper);
       alert("Assinatura copiada para a área de transferência!");
     }
 
     function exportarHTML() {
       let conteudo = document.getElementById('assinatura').innerHTML;
+
+      // Remove emojis (alguns clientes de e-mail podem estranhar)
       conteudo = conteudo.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '');
-      const blob = new Blob([`<html><body>${conteudo}</body></html>`], { type: 'text/html' });
+
+      const blob = new Blob(
+        [`<!DOCTYPE html><html lang="pt-br"><head><meta charset="UTF-8"><title>Assinatura</title></head><body>${conteudo}</body></html>`],
+        { type: 'text/html' }
+      );
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = 'assinatura.html';
       a.click();
+      URL.revokeObjectURL(a.href);
     }
   </script>
 </body>
-
 </html>

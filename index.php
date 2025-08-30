@@ -10,7 +10,7 @@
 
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  
+
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
@@ -62,7 +62,8 @@
   <div class="container py-5">
     <h2 class="mb-4 text-center">Gerador de Assinatura</h2>
 
-    <form action="gerar.php" method="post" enctype="multipart/form-data" class="form-container mx-auto" style="max-width: 600px;">
+    <form action="gerar.php" method="post" enctype="multipart/form-data" class="form-container mx-auto"
+      style="max-width: 600px;">
 
       <div class="mb-3">
         <label class="form-label">Nome:</label>
@@ -72,6 +73,10 @@
       <div class="mb-3">
         <label class="form-label">Email:</label>
         <input type="email" name="email" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label for="cargo" class="form-label">Cargo:</label>
+        <input type="text" id="cargo" name="cargo" class="form-control" required autocomplete="organization-title" placeholder="Ex.: Auxiliar de Recursos Humanos">
       </div>
 
       <div class="mb-3">
